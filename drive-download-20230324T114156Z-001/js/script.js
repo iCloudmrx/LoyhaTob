@@ -2,8 +2,19 @@
 window.addEventListener("DOMContentLoaded", () => {
     const tabItemsParent = document.querySelector(".tabheader__items"),
         tabItems = document.querySelectorAll(".tabheader__item"),
-        tabcontent = document.querySelectorAll(".tabcontent");
+        tabcontent = document.querySelectorAll(".tabcontent"),
+        loader = document.querySelector(".loader");
 
+    //Loader
+    setTimeout(() => {
+        loader.classList.add("leaderOpacity");
+        setTimeout(() => {
+            loader.classList.add("leaderDisplay");
+        }, 500);
+    }, 2000);
+
+    //EndLoader
+    // Tab
     function hiddenTabContent() {
         tabItems.forEach((item) => {
             item.classList.remove("tabheader__item_active");
@@ -31,4 +42,48 @@ window.addEventListener("DOMContentLoaded", () => {
             });
         }
     });
+    //EndTab
+
+    //Timer
+    const deadline = "2024-04-01";
+    function getTimeRemaining(endtime) {
+        const timer = Date.parse(deadline) - Date.parse(new Date()),
+            days = Math.floor(timer / (3600 * 24000)),
+            hours = Math.floor(timer / 3600000) % 24,
+            minutes = Math.floor(timer / 60000) % 60,
+            seconds = Math.floor(timer / 1000) % 60;
+
+        return {
+            timer,
+            days,
+            hours,
+            minutes,
+            seconds,
+        };
+    }
+    updateClock();
+
+    function setClock(selector, endtime) {
+        const timer = document.querySelector(selector),
+            days = timer.querySelector("#days"),
+            hours = timer.querySelector("#hours"),
+            minutes = timer.querySelector("#minutes"),
+            seconds = timer.querySelector("#seconds"),
+            timeInterval = setInterval(updateClock, 1000);
+
+        function updateClock(endtime) {
+            const t = getTimeRemaining(endtime);
+
+            days.innerHTML = t.days;
+            hours.innerHTML = t.hours;
+            minutes.innerHTML = t.minutes;
+            seconds.innerHTML = t.seconds;
+
+            if (t.timer <= 0) {
+                clearInterval(timeInterval);
+            }
+        }
+    }
+    setClock(".timer", deadline);
+    //EndTimer
 });

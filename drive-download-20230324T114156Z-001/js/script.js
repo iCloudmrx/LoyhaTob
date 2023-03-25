@@ -45,13 +45,19 @@ window.addEventListener("DOMContentLoaded", () => {
     //EndTab
 
     //Timer
-    const deadline = "2024-04-01";
+    const deadline = "2023-04-01";
     function getTimeRemaining(endtime) {
-        const timer = Date.parse(deadline) - Date.parse(new Date()),
+        let timer = Date.parse(deadline) - Date.parse(new Date()),
             days = Math.floor(timer / (3600 * 24000)),
             hours = Math.floor(timer / 3600000) % 24,
             minutes = Math.floor(timer / 60000) % 60,
             seconds = Math.floor(timer / 1000) % 60;
+        if (timer <= 0) {
+            days = 0;
+            hours = 0;
+            minutes = 0;
+            seconds = 0;
+        }
 
         return {
             timer,
@@ -61,7 +67,13 @@ window.addEventListener("DOMContentLoaded", () => {
             seconds,
         };
     }
-    updateClock();
+    function getZero(num) {
+        if (num < 10) {
+            return `0${num}`;
+        } else {
+            return num;
+        }
+    }
 
     function setClock(selector, endtime) {
         const timer = document.querySelector(selector),
@@ -71,13 +83,15 @@ window.addEventListener("DOMContentLoaded", () => {
             seconds = timer.querySelector("#seconds"),
             timeInterval = setInterval(updateClock, 1000);
 
+        updateClock();
+
         function updateClock(endtime) {
             const t = getTimeRemaining(endtime);
 
-            days.innerHTML = t.days;
-            hours.innerHTML = t.hours;
-            minutes.innerHTML = t.minutes;
-            seconds.innerHTML = t.seconds;
+            days.innerHTML = getZero(t.days);
+            hours.innerHTML = getZero(t.hours);
+            minutes.innerHTML = getZero(t.minutes);
+            seconds.innerHTML = getZero(t.seconds);
 
             if (t.timer <= 0) {
                 clearInterval(timeInterval);

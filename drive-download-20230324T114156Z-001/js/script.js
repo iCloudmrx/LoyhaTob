@@ -119,7 +119,7 @@ window.addEventListener("DOMContentLoaded", () => {
     modalOpenBtn.addEventListener("click", openModelDemo);
     modalCloseBtn.addEventListener("click", closeModelDemo);
     modal.addEventListener("click", (event) => {
-        if (event.target == model) {
+        if (event.target == modal) {
             closeModelDemo();
         }
     });
@@ -140,4 +140,106 @@ window.addEventListener("DOMContentLoaded", () => {
     }
     window.addEventListener("scroll", showModalByScroll);
     //EndModel
+
+    //Menu
+    class Menu {
+        constructor(src, alt, title, descr, price, parentSelector) {
+            (this.src = src),
+                (this.alt = alt),
+                (this.title = title),
+                (this.descr = descr),
+                (this.price = price),
+                (this.parent = document.querySelector(parentSelector)),
+                (this.transfer = 12000),
+                this.changeToUzb();
+        }
+        changeToUzb() {
+            return this.price * this.transfer;
+        }
+        render() {
+            const element = document.createElement("div");
+            element.innerHTML = `
+            <div class="menu__item">
+            <img src=${this.src} alt=${this.alt} />
+            <h3 class="menu__item-subtitle">${this.title}</h3>
+            <div class="menu__item-descr">${this.descr}</div>
+            <div class="menu__item-divider"></div>
+            <div class="menu__item-price">
+                <div class="menu__item-cost">Price:</div>
+                <div class="menu__item-total">
+                    <span>${this.price}</span> sum/month
+                </div>
+            </div>
+        </div>
+            `;
+            this.parent.append(element);
+        }
+    }
+    new Menu(
+        "img/tabs/3.jpg",
+        "vegy",
+        "Plan “Usual”",
+        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque aliquid molestiae, sit eveniet, tempora ipsum quaerat recusandae sapiente doloremque corporis dolores quas consectetur ut labore distinctio libero reiciendis harum sequi?",
+        10,
+        ".menu .container"
+    ).render();
+    new Menu(
+        "img/tabs/2.jpg",
+        "elite",
+        "Plan “Premium”",
+        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque aliquid molestiae, sit eveniet, tempora ipsum quaerat recusandae sapiente doloremque corporis dolores quas consectetur ut labore distinctio libero reiciendis harum sequi?",
+        15,
+        ".menu .container"
+    ).render();
+    new Menu(
+        "img/tabs/3.jpg",
+        "post",
+        "Plan “VIP”",
+        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque aliquid molestiae, sit eveniet, tempora ipsum quaerat recusandae sapiente doloremque corporis dolores quas consectetur ut labore distinctio libero reiciendis harum sequi?",
+        20,
+        ".menu .container"
+    ).render();
+    //From
+    const forms = document.querySelectorAll("form");
+    forms.forEach((form) => {
+        PostForm(form);
+    });
+    const msg = {
+        load: "loading...",
+        success: "successful",
+        fialure: "something was wrong",
+    };
+    function PostForm(form) {
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+
+            const statusMessage = document.createElement("div");
+            statusMessage.textContent = msg.load;
+            form.append(statusMessage);
+
+            const request = new XMLHttpRequest();
+            request.open("POST", "server.php");
+            request.getResponseHeader("Content-Type", "application/json");
+            const obj = {};
+            const formData = new FormData(form);
+            formData.forEach((key, value) => {
+                obj[key] = value;
+            });
+            const json = JSON.stringify(obj);
+            request.send(json);
+
+            request.addEventListener("load", () => {
+                if (request.status == 200) {
+                    console.log(request.response);
+                    statusMessage.textContent = msg.success;
+                    form.reset();
+                    setTimeout(() => {
+                        statusMessage.remove();
+                    }, 2000);
+                } else {
+                    statusMessage.textContent = msg.fialure;
+                }
+            });
+        });
+    }
 });

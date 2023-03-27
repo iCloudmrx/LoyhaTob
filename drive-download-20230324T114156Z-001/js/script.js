@@ -103,8 +103,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
     //Model
     const modal = document.querySelector(".modal"),
-        modalOpenBtn = document.querySelector("[Date-model]"),
-        modalCloseBtn = document.querySelector("[Date-close]");
+        modalOpenBtn = document.querySelector("[Date-model]");
     function openModelDemo() {
         modal.classList.add("show");
         modal.classList.remove("hide");
@@ -117,9 +116,11 @@ window.addEventListener("DOMContentLoaded", () => {
         document.body.style.overflow = "";
     }
     modalOpenBtn.addEventListener("click", openModelDemo);
-    modalCloseBtn.addEventListener("click", closeModelDemo);
     modal.addEventListener("click", (event) => {
-        if (event.target == modal) {
+        if (
+            event.target == modal ||
+            event.target.getAttribute("Date-close") == ""
+        ) {
             closeModelDemo();
         }
     });
@@ -205,7 +206,7 @@ window.addEventListener("DOMContentLoaded", () => {
         PostForm(form);
     });
     const msg = {
-        load: "loading...",
+        load: "img/spin2.svg",
         success: "successful",
         fialure: "something was wrong",
     };
@@ -213,9 +214,12 @@ window.addEventListener("DOMContentLoaded", () => {
         form.addEventListener("submit", (e) => {
             e.preventDefault();
 
-            const statusMessage = document.createElement("div");
-            statusMessage.textContent = msg.load;
-            form.append(statusMessage);
+            const statusMessage = document.createElement("img");
+            statusMessage.src = msg.load;
+            statusMessage.style.cssText = `
+            display:block;
+            margin:0 auto;
+            `;
 
             const request = new XMLHttpRequest();
             request.open("POST", "server.php");
@@ -231,15 +235,37 @@ window.addEventListener("DOMContentLoaded", () => {
             request.addEventListener("load", () => {
                 if (request.status == 200) {
                     console.log(request.response);
-                    statusMessage.textContent = msg.success;
+                    showThanksModel(msg.success);
                     form.reset();
                     setTimeout(() => {
                         statusMessage.remove();
                     }, 2000);
                 } else {
-                    statusMessage.textContent = msg.fialure;
+                    showThanksModel(msg.fialure);
                 }
             });
         });
+    }
+
+    function showThanksModel(message) {
+        const prevModelDialog = document.querySelector(".modal__dialog");
+
+        prevModelDialog.classList.add("hide");
+        openModelDemo();
+
+        const thanksModel = document.createElement("div");
+        thanksModel.classList.add(".modal__dialog");
+        thanksModel.innerHTML = `
+        <div class="modal__content">
+        <div Date-close class="modal__close">&times;</div>
+        <div class="modal__title">${message}</div>
+        </div>
+        `;
+        document.querySelector(".modal").append(prevModelDialog);
+        setTimeout(() => {
+            prevModelDialog.classList.add("show");
+            prevModelDialog.classList.remove("hide");
+            thanksModel.remove();
+        }, 4000);
     }
 });

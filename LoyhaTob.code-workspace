@@ -1,0 +1,15 @@
+{
+    "folders": [
+        {
+            "name": "serial",
+            "path": "."
+        },
+        {
+            "name": "LoyhaTob",
+            "path": "D:/GitUpLoad/LoyhaTob"
+        }
+    ],
+    "settings": {
+        "liveServer.settings.multiRootWorkspaceName": "LoyhaTob"
+    }
+}
